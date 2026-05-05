@@ -4,11 +4,49 @@ import webbrowser
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 import networkx as nx
-import Cargas
 import folium
 from folium.plugins import AntPath
 import requests
 import math
+
+def load_data_from_txt(filepath):
+    coordinates = []
+    demands = []
+
+    num_vehicles = None
+    capacity = None
+
+    with open(filepath, "r") as f:
+        for line in f:
+            line = line.strip()
+
+            if not line:
+                continue
+
+            # ler configurações
+            if line.startswith("#"):
+                parts = line.replace("#", "").split()
+
+                if parts[0] == "vehicles":
+                    num_vehicles = int(parts[1])
+
+                elif parts[0] == "capacity":
+                    capacity = int(parts[1])
+
+                continue
+
+            # ler nós
+            parts = line.split()
+
+            node_id = int(parts[0])
+            lat = float(parts[1])
+            lon = float(parts[2])
+            demand = int(parts[3])
+
+            coordinates.append((lat, lon))
+            demands.append(demand)
+
+    return coordinates, demands, num_vehicles, capacity
 
 def euclidean_distance(coord1, coord2):
     return int(
@@ -35,7 +73,7 @@ def create_distance_matrix_from_coords(coords):
 def get_real_route(coords):
     base_url = "http://router.project-osrm.org/route/v1/driving/"
 
-    # OSRM usa lon,lat (invertido!)
+    # OSRM usa lon,lat (invertido)
     coord_str = ";".join([f"{lon},{lat}" for lat, lon in coords])
 
     url = f"{base_url}{coord_str}?overview=full&geometries=geojson"
@@ -50,30 +88,27 @@ def get_real_route(coords):
 
 # All data model is using dummy data, but most of it should be hard-coded for performance
 def create_data_model():
-    # Stores the data for the problem.
-    # Also imports Cargas to use optimized loads for each vehicle
-    # Cargas still generates dummy data
-    
     data = {}
-    optimized_weights = Cargas.get_optimized_loads(num_vehicles=2)
 
-    coords = [
-        (-5.7945, -35.2110),
-        (-5.8005, -35.2090),
-        (-5.8020, -35.2220),
-        (-5.7950, -35.2270),
-        (-5.7905, -35.2200),
-        (-5.7980, -35.2250),
-        (-5.7920, -35.2050),
-    ]
-     # Demands for each of the places, as it stands, demand is based on weight
-    data["demands"] = [0, 2, 3, 4, 2, 5, 3]
-    data["vehicle_capacities"] = optimized_weights
-    data["num_vehicles"] = len(optimized_weights)
-    data["depot"] = 0
+    # carregar dados do arquivo
+    coords, demands, num_vehicles, capacity = load_data_from_txt("dados.txt")
 
     data["coordinates"] = coords
+    data["demands"] = demands
+
+    # gerar matriz de distância a partir das coordenadas
     data["distance_matrix"] = create_distance_matrix_from_coords(coords)
+
+    # valores padrão (caso não estejam no txt)
+    if num_vehicles is None:
+        num_vehicles = 5
+
+    if capacity is None:
+        capacity = 15
+
+    data["num_vehicles"] = num_vehicles
+    data["vehicle_capacities"] = [capacity] * num_vehicles
+    data["depot"] = 0
 
     return data
 
