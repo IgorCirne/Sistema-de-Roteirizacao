@@ -1,20 +1,68 @@
-# Routing-Automation
-Repository created for the project related to automating truck routing, this repository uses Python and Google OR-Tools for optimization of these problems
+# Sistema de Roteirização Logística com OR-Tools, OSRM e Folium
 
-As of now, this repository only contains dummy data for testing the functions
+## Descrição
 
-This repository is going to be used as a Undergraduate Thesis for Igor Cirne Borges de Oliveira
+Este projeto foi desenvolvido como Trabalho de Conclusão de Curso (TCC) e apresenta uma solução para o Problema de Roteirização de Veículos Capacitados (CVRP), integrando técnicas de otimização combinatória, geoprocessamento e visualização geográfica.
 
-## Programs
+A aplicação utiliza o Google OR-Tools para geração das rotas, o OSRM para obtenção de trajetos compatíveis com a malha viária real e a biblioteca Folium para criação de mapas interativos.
 
-This application currently has two functioning programs: Cargas and Routing
+## Funcionalidades
 
-Cargas is used to load vehicles with items, it maximizes value and is constrained by the maximum weight and volume of each truck. 
+* Modelagem e resolução do CVRP;
+* Restrições de capacidade dos veículos;
+* Distribuição das demandas entre os veículos;
+* Geração de trajetos reais utilizando OSRM;
+* Integração com dados cartográficos do OpenStreetMap;
+* Visualização das rotas em mapas interativos;
+* Exportação dos resultados em formato HTML.
 
-Routing uses the data created and optimized on Cargas to create a route for a number of Vehicles that would supply different stores, using metaheuristics to define the best route possible.
-As of now, the metaheuristic used is a guided local search, which is normally the best metaheuristic for vehicle routing as it escapes local minimums
+## Tecnologias Utilizadas
 
-The routing program must use penalties to drop certain locations when doing routing, that is because if the problem has more demand than the trucks can supply,
-the program runs ad-infinitum because there are infinite optimal solutions, this does not happen the other way around
+* Python
+* Google OR-Tools
+* OSRM (Open Source Routing Machine)
+* OpenStreetMap
+* Folium
+* PuLP
 
-The distance program uses OSMNX to point two places using coordinates from OpenStreetMap, calculates the shortest route between these points, prints distance and expected travel time by car.
+## Estrutura do Projeto
+
+```text
+data/          # Arquivos de entrada
+routing/       # Modelagem e otimização das rotas
+output/        # Resultados gerados pelo sistema
+main.py        # Execução principal
+```
+
+## Execução
+
+Instale as dependências:
+
+```bash
+pip install -r requirements.txt
+```
+
+Execute o sistema:
+
+```bash
+python main.py
+```
+
+Os mapas e relatórios gerados serão armazenados na pasta de saída configurada no projeto.
+
+## Trabalho Acadêmico
+
+Este repositório contém o código-fonte desenvolvido para o Trabalho de Conclusão de Curso:
+
+**Sistema de Apoio à Roteirização Logística Utilizando Técnicas de Otimização Combinatória e Geoprocessamento**
+
+O objetivo do trabalho é investigar a integração entre otimização matemática, roteamento geográfico e visualização interativa para apoio ao planejamento logístico.
+
+## Autor
+
+Igor Cirne
+
+## Licença
+
+Este projeto foi desenvolvido para fins acadêmicos.
+
