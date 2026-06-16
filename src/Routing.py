@@ -8,7 +8,7 @@ import folium
 from folium.plugins import AntPath
 import requests
 import math
-
+import time
 def load_data_from_txt(filepath):
     coordinates = []
     demands = []
@@ -48,13 +48,40 @@ def load_data_from_txt(filepath):
 
     return coordinates, demands, num_vehicles, capacity
 
-def euclidean_distance(coord1, coord2):
-    return int(
-        math.sqrt(
-            (coord1[0] - coord2[0])**2 +
-            (coord1[1] - coord2[1])**2
-        ) * 100000  # escala para números inteiros
+def haversine_distance(coord1, coord2):
+    """
+    Calcula a distância entre dois pontos geográficos
+    utilizando a fórmula de Haversine.
+
+    Retorna a distância em metros.
+    """
+
+    lat1, lon1 = coord1
+    lat2, lon2 = coord2
+
+    R = 6371000  # raio médio da Terra em metros
+
+    lat1 = math.radians(lat1)
+    lon1 = math.radians(lon1)
+    lat2 = math.radians(lat2)
+    lon2 = math.radians(lon2)
+
+    dlat = lat2 - lat1
+    dlon = lon2 - lon1
+
+    a = (
+        math.sin(dlat / 2) ** 2 +
+        math.cos(lat1) *
+        math.cos(lat2) *
+        math.sin(dlon / 2) ** 2
     )
+
+    c = 2 * math.atan2(
+        math.sqrt(a),
+        math.sqrt(1 - a)
+    )
+
+    return int(R * c)
 
 def create_distance_matrix_from_coords(coords):
     size = len(coords)
@@ -62,11 +89,18 @@ def create_distance_matrix_from_coords(coords):
 
     for i in range(size):
         row = []
+
         for j in range(size):
             if i == j:
                 row.append(0)
             else:
-                row.append(euclidean_distance(coords[i], coords[j]))
+                row.append(
+                    haversine_distance(
+                        coords[i],
+                        coords[j]
+                    )
+                )
+
         matrix.append(row)
 
     return matrix
@@ -91,7 +125,7 @@ def create_data_model():
     data = {}
 
     # carregar dados do arquivo
-    coords, demands, num_vehicles, capacity = load_data_from_txt("dados.txt")
+    coords, demands, num_vehicles, capacity = load_data_from_txt("dados3.txt")
 
     data["coordinates"] = coords
     data["demands"] = demands
@@ -422,16 +456,19 @@ def main():
     search_parameters.time_limit.FromSeconds(20) # set time limit to 20 seconds
 
     # Solve the problem.
+    inicio = time.time()
     assignment = routing.SolveWithParameters(search_parameters)
+
+
 
     # Print solution on console.
     if assignment:
         print_solution(data, manager, routing, assignment)
-
         # gerar e plotar rotas
         routes = get_routes(data, manager, routing, assignment)
-       # plot_routes(data, routes)
+        plot_routes(data, routes)
         plot_real_routes_map(data, routes)  # Grafo geográfico real
-
+    fim_total = time.time()
+    print(f"Execution time: {fim_total - inicio:.4f} s")
 if __name__ == "__main__":
     main()
