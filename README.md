@@ -29,13 +29,19 @@ A aplicação utiliza o Google OR-Tools para geração das rotas otimizadas, o O
 ## Estrutura do Projeto
 
 ```text
+```text
+docs/
+└── TCC_Igor_Cirne_Roteirização.pdf          # Versão final do Trabalho de Conclusão de Curso
+
 src/
-├── Routing.py      # Execução principal do sistema
-├── distance.py     # Construção da matriz de distâncias
-├── Cargas.py       # Rotinas auxiliares relacionadas às cargas
-├── dados.txt       # Instância de teste
-├── dados2.txt      # Instância de teste
-└── dados3.txt      # Instância de teste
+├── Routing.py              # Execução principal do sistema
+├── distance.py             # Construção da matriz de distâncias
+├── Cargas.py               # Rotinas auxiliares relacionadas às cargas
+├── dados.txt               # Instância de teste
+├── dados2.txt              # Instância de teste
+└── dados3.txt              # Instância de teste
+```
+
 ```
 
 ## Execução
