@@ -9,6 +9,7 @@ from folium.plugins import AntPath
 import requests
 import math
 import time
+
 def load_data_from_txt(filepath):
     coordinates = []
     demands = []
@@ -49,13 +50,6 @@ def load_data_from_txt(filepath):
     return coordinates, demands, num_vehicles, capacity
 
 def haversine_distance(coord1, coord2):
-    """
-    Calcula a distância entre dois pontos geográficos
-    utilizando a fórmula de Haversine.
-
-    Retorna a distância em metros.
-    """
-
     lat1, lon1 = coord1
     lat2, lon2 = coord2
 
@@ -125,7 +119,7 @@ def create_data_model():
     data = {}
 
     # carregar dados do arquivo
-    coords, demands, num_vehicles, capacity = load_data_from_txt("dados3.txt")
+    coords, demands, num_vehicles, capacity = load_data_from_txt("dados2.txt")
 
     data["coordinates"] = coords
     data["demands"] = demands
@@ -456,7 +450,7 @@ def main():
     search_parameters.time_limit.FromSeconds(20) # set time limit to 20 seconds
 
     # Solve the problem.
-    inicio = time.time()
+    #inicio = time.time()
     assignment = routing.SolveWithParameters(search_parameters)
 
 
@@ -468,7 +462,7 @@ def main():
         routes = get_routes(data, manager, routing, assignment)
         plot_routes(data, routes)
         plot_real_routes_map(data, routes)  # Grafo geográfico real
-    fim_total = time.time()
-    print(f"Execution time: {fim_total - inicio:.4f} s")
+    #fim_total = time.time()
+    #print(f"Execution time: {fim_total - inicio:.4f} s")
 if __name__ == "__main__":
     main()
