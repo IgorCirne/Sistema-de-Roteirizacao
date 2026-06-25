@@ -119,7 +119,7 @@ def create_data_model():
     data = {}
 
     # carregar dados do arquivo
-    coords, demands, num_vehicles, capacity = load_data_from_txt("dados2.txt")
+    coords, demands, num_vehicles, capacity = load_data_from_txt("dados3.txt")
 
     data["coordinates"] = coords
     data["demands"] = demands
